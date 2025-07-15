@@ -13,6 +13,8 @@ import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from matplotlib.figure import Figure
 import random
+import requests
+import os
 
 class WeatherDashboard:
     def __init__(self, root):
@@ -99,8 +101,8 @@ class WeatherDashboard:
         # Initialize the display with default data
         self.update_display()
         
-    def generate_sample_data(self):
-        """Generate sample weather data - DO NOT MODIFY THIS METHOD"""
+    def generate_sample_data(self): #replace with actual API call 
+        # api_key = os.getenv('WEATHER_API_KEY')
         data = {}
         cities = ["New York", "Los Angeles", "Chicago", "Houston", "Phoenix", 
                  "Seattle", "Miami", "Denver", "Boston", "Atlanta"]

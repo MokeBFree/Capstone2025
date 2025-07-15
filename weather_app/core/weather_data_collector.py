@@ -22,7 +22,7 @@ class WeatherDataCollector:
         self.session = requests.Session()  # Reuse connections & keeps connections alive
         self.last_request_time = 0
         self.min_request_interval = 60.0  # Minimum seconds between requests
-        
+                                        #max amount of requests 60/hr per API limits
         # Set up logging so that warnings and errors can be tracked
         logging.basicConfig(level=logging.INFO)
         self.logger = logging.getLogger(__name__)
@@ -43,7 +43,7 @@ class WeatherDataCollector:
         """
         Make a robust API request with error handling and retries.
         """
-        self._respect_rate_limit()
+        self._respect_rate_limit() #calls rate limit function to ensure we don't exceed API limits.
         
         # Attaches the API key to the query parameters.
         # Constructs the full API URL.
