@@ -16,3 +16,10 @@ db = WeatherDatabase("data/weather.db")
 #processes the data
 
 #displays the data and runs gui
+def main():
+    root = tk.Tk()
+    app = WeatherDashboard(root)
+    root.mainloop()
+
+if __name__ == "__main__":
+    main()

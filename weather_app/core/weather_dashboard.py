@@ -102,7 +102,27 @@ class WeatherDashboard:
         self.update_display()
         
     def generate_sample_data(self): #replace with actual API call 
-        # api_key = os.getenv('WEATHER_API_KEY')
+
+    # def get_real_weather_data(self, city):
+    #     api_key = os.getenv('WEATHER_API_KEY')
+    #     url = f"http://api.openweathermap.org/data/2.5/weather?q={city}&appid={api_key}&units=imperial"
+    #     response = requests.get(url)
+    
+    #     if response.status_code == 200:
+    #         data = response.json()
+    #         return {
+    #             'temperature': data['main']['temp'],
+    #             'humidity': data['main']['humidity'],
+    #             'precipitation': data.get('rain', {}).get('1h', 0),
+    #             'conditions': data['weather'][0]['description'],
+    #             'wind_speed': data['wind']['speed'],
+    #             'pressure': data['main']['pressure'],
+    #             'date': datetime.now()
+    #     }
+    #     else:
+    #         raise Exception(f"Failed to fetch data: {response.status_code}")
+
+        """Generate sample weather data for multiple cities"""
         data = {}
         cities = ["New York", "Los Angeles", "Chicago", "Houston", "Phoenix", 
                  "Seattle", "Miami", "Denver", "Boston", "Atlanta"]
@@ -224,10 +244,3 @@ class WeatherDashboard:
         days = 7 if selection == "Last 7 Days" else 14 if selection == "Last 14 Days" else 30
         return [datetime.now() - timedelta(days=i) for i in range(days)][::-1]
 
-def main():
-    root = tk.Tk()
-    app = WeatherDashboard(root)
-    root.mainloop()
-
-if __name__ == "__main__":
-    main()
