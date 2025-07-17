@@ -150,3 +150,5 @@ class WeatherDataCollector:
         
         # If parsing fails (e.g., raw_data['main']['temp'] doesn’t exist or is not a float), the error is logged and the 
         # result is discarded.
+
+#data need to be send to the weather database for storage and retrieval.
