@@ -39,7 +39,7 @@ class WeatherDataCollector:
             time.sleep(sleep_time)
         self.last_request_time = time.time()
      
-    def _make_api_request(self, endpoint: str, params: Dict) -> Optional[Dict]: #lines 42 - 90 Error Handling
+    def make_api_request(self, endpoint: str, params: Dict) -> Optional[Dict]: #lines 42 - 90 Error Handling
         """
         Make a robust API request with error handling and retries.
         """
@@ -103,7 +103,7 @@ class WeatherDataCollector:
             'units': 'metric'
         }
         
-        raw_data = self._make_api_request('weather', params)
+        raw_data = self.make_api_request('weather', params)
         if raw_data:
             return self._validate_and_clean_current_weather(raw_data)
         return None
