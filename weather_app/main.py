@@ -1,5 +1,6 @@
 from core.config import Config #needs to import the config file to access the API key and URL
 from core.weather_data_collector import WeatherDataCollector
+from core.weather_dashboard import WeatherDashboard
 from core.storage import save_last_city, load_last_city, log_weather_data
 
 from dotenv import load_dotenv
@@ -36,14 +37,22 @@ def get_weather():
 
 # #displays the data and runs gui
 
-root = tk.Tk()
-root.title("Weather App")
-root.geometry("300x200")
-city_entry = tk.Entry(root, width=25)
-city_entry.pack(pady=10)
-city_entry.insert(0, "Enter city")
-get_button = tk.Button(root, text="Get Weather", command=get_weather)
-get_button.pack(pady=5)
-result_label = tk.Label(root, text="", font=("Helvetica", 12))
-result_label.pack(pady=10)
-root.mainloop()
+# root = tk.Tk()
+# root.title("Weather App")
+# root.geometry("300x200")
+# city_entry = tk.Entry(root, width=25)
+# city_entry.pack(pady=10)
+# city_entry.insert(0, "Enter city")
+# get_button = tk.Button(root, text="Get Weather", command=get_weather)
+# get_button.pack(pady=5)
+# result_label = tk.Label(root, text="", font=("Helvetica", 12))
+# result_label.pack(pady=10)
+# root.mainloop()
+
+def main():
+    root = tk.Tk()
+    app = WeatherDashboard(root)
+    root.mainloop()
+
+if __name__ == "__main__":
+    main()

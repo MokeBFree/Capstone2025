@@ -244,13 +244,3 @@ class WeatherDashboard:
         days = 7 if selection == "Last 7 Days" else 14 if selection == "Last 14 Days" else 30
         return [datetime.now() - timedelta(days=i) for i in range(days)][::-1]
 
-
-#this code is used to run the GUI
-#it will be moved to the main.py file
-def main():
-    root = tk.Tk()
-    app = WeatherDashboard(root)
-    root.mainloop()
-
-if __name__ == "__main__":
-    main()
