@@ -21,13 +21,14 @@ def get_weather():
     collector = WeatherDataCollector(API_KEY)
     weather = collector.get_current_weather(city)
     save_last_city(city)  # Save the last city for future reference
-    log_weather_data(city, temp, description)  # Log the weather data
+   
     if weather is None:
         result_label.config(text="Error fetching data.")
     else:
         description = weather["weather_description"]
         temp = weather["temperature"]
         result_label.config(text=f"{description.capitalize()}, {temp}°C")
+        log_weather_data(city, temp, description)
 
 
 
