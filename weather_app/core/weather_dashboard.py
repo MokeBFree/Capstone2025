@@ -15,6 +15,8 @@ from matplotlib.figure import Figure
 import random
 import requests
 import os
+from core. weather_data_collector import WeatherDataCollector
+
 
 class WeatherDashboard:
     def __init__(self, root):
