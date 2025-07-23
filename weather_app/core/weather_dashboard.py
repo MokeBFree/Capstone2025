@@ -16,17 +16,22 @@ import random
 import requests
 import os
 from core. weather_data_collector import WeatherDataCollector
-
+from dotenv import load_dotenv
 
 class WeatherDashboard:
     def __init__(self, root):
+        load_dotenv() # Load environment variables from .env file
+
+        """Initialize the Weather Dashboard GUI"""      
+        
         self.root = root
         self.root.title("Weather Dashboard")
         self.root.geometry("900x700")
         
         # Initialize data storage
-        self.weather_data = self.generate_sample_data()
-        self.current_city = "New York"
+        self.current_city = "Denver"  # Default city
+        self.weather_data = {self.current_city: [self.get_weather_data(self.current_city)]}
+        
         
         # TODO: Add instance variables for storing user selections
         # Example: self.temperature_unit = "F"  # or "C"
@@ -54,7 +59,7 @@ class WeatherDashboard:
         ttk.Label(control_frame, text="City:").grid(row=0, column=0, sticky=tk.W, pady=5)
         self.city_entry = ttk.Entry(control_frame)
         self.city_entry.grid(row=0, column=1, pady=5, sticky=tk.W)
-        self.city_entry.insert(0, "New York")
+        self.city_entry.insert(0, "Denver")
         
         # Date range combobox
         ttk.Label(control_frame, text="When?").grid(row=1, column=0, sticky=tk.W, pady=5)
@@ -103,55 +108,27 @@ class WeatherDashboard:
         # Initialize the display with default data
         self.update_display()
         
-    def generate_sample_data(self): #replace with actual API call 
 
-    # def get_real_weather_data(self, city):
-    #     api_key = os.getenv('WEATHER_API_KEY')
-    #     url = f"http://api.openweathermap.org/data/2.5/weather?q={city}&appid={api_key}&units=imperial"
-    #     response = requests.get(url)
+    def get_weather_data(self, city):
+        api_key = os.getenv('OPENWEATHER_API_KEY')
+        url = f"http://api.openweathermap.org/data/2.5/weather?q={city}&appid={api_key}&units=imperial"
+        response = requests.get(url)
     
-    #     if response.status_code == 200:
-    #         data = response.json()
-    #         return {
-    #             'temperature': data['main']['temp'],
-    #             'humidity': data['main']['humidity'],
-    #             'precipitation': data.get('rain', {}).get('1h', 0),
-    #             'conditions': data['weather'][0]['description'],
-    #             'wind_speed': data['wind']['speed'],
-    #             'pressure': data['main']['pressure'],
-    #             'date': datetime.now()
-    #     }
-    #     else:
-    #         raise Exception(f"Failed to fetch data: {response.status_code}")
+        if response.status_code == 200:
+            data = response.json()
+            return {
+                'temperature': data['main']['temp'],
+                'humidity': data['main']['humidity'],
+                'precipitation': data.get('rain', {}).get('1h', 0),
+                'conditions': data['weather'][0]['description'],
+                'wind_speed': data['wind']['speed'],
+                'pressure': data['main']['pressure'],
+                'date': datetime.now()
+        }
+        else:
+            raise Exception(f"Failed to fetch data: {response.status_code}")
 
-        """Generate sample weather data for multiple cities"""
-        data = {}
-        cities = ["New York", "Los Angeles", "Chicago", "Houston", "Phoenix", 
-                 "Seattle", "Miami", "Denver", "Boston", "Atlanta"]
-        
-        for city in cities:
-            city_data = []
-            base_temp = random.randint(40, 85)
-            
-            for i in range(30):  # 30 days of data
-                date = datetime.now() - timedelta(days=29-i)
-                temp = base_temp + random.randint(-15, 15)
-                humidity = random.randint(30, 90)
-                precipitation = random.choice([0, 0, 0, 0.1, 0.2, 0.5, 1.0, 2.0])
-                
-                city_data.append({
-                    'date': date,
-                    'temperature': temp,
-                    'humidity': humidity,
-                    'precipitation': precipitation,
-                    'conditions': random.choice(['Sunny', 'Cloudy', 'Rainy', 'Partly Cloudy']),
-                    'wind_speed': random.randint(0, 25),
-                    'pressure': round(random.uniform(29.5, 30.5), 2)
-                })
-            
-            data[city] = city_data
-            
-        return data
+        # If the API call is successful, it returns a dictionary with weather data.
     
     def update_display(self):
         """Update all weather displays with current selections"""
@@ -217,12 +194,15 @@ class WeatherDashboard:
         if not city:
             messagebox.showerror("Input Error", "Please enter a city name.")
             return
-        if city not in self.weather_data:
-            messagebox.showerror("City Not Found", f"City '{city}' not found in data.")
-            return
-        self.current_city = city
-        self.update_display()
-    
+        try:
+            live_data = self.get_weather_data(city)
+            self.weather_data[city] = [live_data]
+            self.current_city = city
+            self.update_display()
+        except Exception as e:
+            messagebox.showerror("API Error", str(e))
+       
+       
     def on_clear_clicked(self):
         """Handle clear/reset button click"""
         # Reset inputs to defaults

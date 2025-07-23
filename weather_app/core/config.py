@@ -18,9 +18,9 @@ class Config:
     def from_environment(cls):
         """This method instantiates a Config object using environment variables, 
         which is ideal for production deployments or CI pipelines."""
-        api_key = os.getenv('WEATHER_API_KEY') # Tries to load the WEATHER_API_KEY from the environment.
+        api_key = os.getenv('OPENWEATHER_API_KEY') # Tries to load the WEATHER_API_KEY from the environment.
         if not api_key:
-            raise ValueError("WEATHER_API_KEY environment variable required")
+            raise ValueError("OPENWEATHER_API_KEY environment variable required")
             
         return cls(
             api_key=api_key,
