@@ -39,6 +39,16 @@ class WeatherDashboard:
         
         # Create the GUI
         self.create_widgets()
+
+                # Compare Cities
+        self.city1_entry = tk.Entry(root)
+        self.city1_entry.grid(row=3, column=1)
+
+        self.city2_entry = tk.Entry(root)
+        self.city2_entry.grid(row=4, column=1)
+
+        compare_button = tk.Button(root, text="Compare Cities", command=self.on_compare_clicked)
+        compare_button.grid(row=5, column=1)
         
     def create_widgets(self):
         """Create and arrange all GUI widgets"""
@@ -108,6 +118,7 @@ class WeatherDashboard:
         # Initialize the display with default data
         self.update_display()
         
+
 
     def get_weather_data(self, city):
         api_key = os.getenv('OPENWEATHER_API_KEY')
@@ -212,6 +223,19 @@ class WeatherDashboard:
         self.temperature_unit.set("F")
         self.current_city = "New York"
         self.update_display()
+
+    def on_compare_clicked(self):
+        city1 = self.city1_entry.get().strip()
+        city2 = self.city2_entry.get().strip()
+
+        if city1 not in self.weather_data or city2 not in self.weather_data:
+            messagebox.showerror("Error", "Weather data missing for one or both cities.")
+            return
+
+        data1 = self.weather_data[city1][-1]  # get most recent entry
+        data2 = self.weather_data[city2][-1]
+
+        self.display_comparison(city1, data1, city2, data2)
     
     def convert_temperature(self, temp_f, to_celsius=True):
         """Helper method to convert between temperature units"""
