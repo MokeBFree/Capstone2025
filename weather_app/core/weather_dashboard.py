@@ -225,17 +225,35 @@ class WeatherDashboard:
         self.update_display()
 
     def on_compare_clicked(self):
+        """Handle compare button click"""
         city1 = self.city1_entry.get().strip()
         city2 = self.city2_entry.get().strip()
 
-        if city1 not in self.weather_data or city2 not in self.weather_data:
-            messagebox.showerror("Error", "Weather data missing for one or both cities.")
+        if not city1 or not city2:
+            messagebox.showerror("You need both cities for a comparison.")
             return
-
-        data1 = self.weather_data[city1][-1]  # get most recent entry
-        data2 = self.weather_data[city2][-1]
+        
+        try:
+            data1 = self.get_weather_data(city1)
+            data2 = self.get_weather_data(city2)
+        except Exception as e:
+            messagebox.showerror("API Error", f"Fetch didn't work: {e}")
+            return
+        
+        self.weather_data[city1] =[data1]  # get most recent entry
+        self.weather_data[city2] =[data2]
 
         self.display_comparison(city1, data1, city2, data2)
+    
+    def display_comparison(self, city1, data1, city2, data2):
+        msg = (
+            f"Comparing {city1} and {city2}:\n\n"
+            f"Temperature: {data1['temperature']}°C vs {data2['temperature']}°C\n"
+            f"Humidity: {data1['humidity']}% vs {data2['humidity']}%\n"
+            f"Wind Speed: {data1['wind_speed']} km/h vs {data2['wind_speed']} km/h\n"
+            f"Conditions: {data1['weather_description']} vs {data2['weather_description']}"
+        )
+        messagebox.showinfo("City Comparison", msg)
     
     def convert_temperature(self, temp_f, to_celsius=True):
         """Helper method to convert between temperature units"""
