@@ -89,6 +89,24 @@ class WeatherDataCollector:
         # If all attempts fail, it logs a critical error and returns None.
         return None #lines 42 - 90 Error Handling
     
+    
+    def get_coordinates_for_city(self, city: str) -> Optional[Dict[str, float]]:
+        """Convert City name to coordinates using geocoding (for Open Mateo)"""
+        geocode_url = "http://api.openweathermap.org/geo/1.0/direct"
+        params = {
+            "q": city,
+            "limit": 1,
+            "appid": self.api_key
+        }
+        response = self.make_api_request("", params=params, full_url=geocode_url)
+        if response and isinstance(response, list) and len(response) > 0:
+            return {
+                "lat": response[0]["lat"],
+                "lon": response[0]["lon"]
+            }
+        return None
+    
+
     def get_current_weather(self, city: str, country_code: str = None) -> Optional[Dict]:
         """
         Fetch current weather data for a specific location.
@@ -96,7 +114,7 @@ class WeatherDataCollector:
         location = city
         if country_code:
             location += f",{country_code}"
-        # Combines the city and country code into one location string.S
+        # Combines the city and country code into one location string.
                 
         params = {
             'q': location,
