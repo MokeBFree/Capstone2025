@@ -14,7 +14,7 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from matplotlib.figure import Figure
 import random
 import requests
-from seaborn import seaborn
+import seaborn as sns
 from core. weather_data_collector import WeatherDataCollector
 from dotenv import load_dotenv
 import os 
@@ -207,19 +207,17 @@ class WeatherDashboard:
         if not city:
             messagebox.showerror("Input Error", "Please enter a city name.")
             return
+        
         try:
             from_date = self.get_date_range()[0].date().isoformat()
             to_date = self.get_date_range()[-1].date().isoformat()
 
-            coords = self.get_get_coordinates_for_city(city)
+            coords = self.get_coordinates(city)
             if not coords:
                 raise Exception("Invalid city coordinates.")
             
             records = self.get_historical_weather(coords["lat"], coords["lon"], from_date, to_date)
             self.weather_data[city] = records
-
-
-
 
             self.current_city = city
             self.update_display()
@@ -288,3 +286,43 @@ class WeatherDashboard:
         days = 7 if selection == "Last 7 Days" else 14 if selection == "Last 14 Days" else 30
         return [datetime.now() - timedelta(days=i) for i in range(days)][::-1]
 
+    def get_coordinates(self, city):
+        geocode_url = "https://geocoding-api.open-meteo.com/v1/search"
+        params = {
+            "name": city,
+            "count": 1,
+            "language": "en",
+            "format": "json"
+        }
+        response = requests.get(geocode_url, params=params)
+        if response.status_code == 200:
+            results = response.json().get("results")
+            if results and len(results) > 0:
+                return {"lat": results[0]["latitude"], "lon": results[0]["longitude"]}
+        return None
+
+    def get_historical_weather(self, lat, lon, start_date, end_date):
+        url = "https://archive-api.open-meteo.com/v1/archive"
+        params = {
+            "latitude": lat,
+            "longitude": lon,
+            "start_date": start_date,
+            "end_date": end_date,
+            "daily": "temperature_2m_max,temperature_2m_min,precipitation_sum,humidity_2m_mean",
+            "timezone": "America/Denver"
+        }
+
+        response = requests.get(url, params=params)
+        if response.status_code != 200:
+            raise Exception(f"API failed: {response.status_code}")
+
+        data = response.json()["daily"]
+        records = []
+        for i in range(len(data["time"])):
+            records.append({
+                "date": datetime.strptime(data["time"][i], "%Y-%m-%d"),
+                "temperature": (data["temperature_2m_max"][i] + data["temperature_2m_min"][i]) / 2,
+                "humidity": data["humidity_2m_mean"][i],
+                "precipitation": data["precipitation_sum"][i]
+            })
+        return records
