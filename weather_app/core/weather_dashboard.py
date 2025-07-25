@@ -308,7 +308,7 @@ class WeatherDashboard:
             "longitude": lon,
             "start_date": start_date,
             "end_date": end_date,
-            "daily": "temperature_2m_max,temperature_2m_min,precipitation_sum,humidity_2m_mean",
+            "daily": "temperature_2m_max,temperature_2m_min,precipitation_sum",            
             "timezone": "America/Denver"
         }
 
@@ -322,7 +322,6 @@ class WeatherDashboard:
             records.append({
                 "date": datetime.strptime(data["time"][i], "%Y-%m-%d"),
                 "temperature": (data["temperature_2m_max"][i] + data["temperature_2m_min"][i]) / 2,
-                "humidity": data["humidity_2m_mean"][i],
                 "precipitation": data["precipitation_sum"][i]
             })
         return records
