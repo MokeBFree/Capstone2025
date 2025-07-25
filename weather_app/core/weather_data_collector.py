@@ -39,17 +39,18 @@ class WeatherDataCollector:
             time.sleep(sleep_time)
         self.last_request_time = time.time()
      
-    def make_api_request(self, endpoint: str, params: Dict) -> Optional[Dict]: #lines 42 - 90 Error Handling
+    def make_api_request(self, endpoint: str, params: Dict, full_url: str=None) -> Optional[Dict]: #lines 42 - 90 Error Handling
         """
         Make a robust API request with error handling and retries.
         """
         self._respect_rate_limit() #calls rate limit function to ensure we don't exceed API limits.
-        
+        if not full_url:
         # Attaches the API key to the query parameters.
         # Constructs the full API URL.
-        params['appid'] = self.api_key
-        url = f"{self.base_url}/{endpoint}"
-        
+            params['appid'] = self.api_key
+            url = f"{self.base_url}/{endpoint}"
+        else:
+            url = full_url
         # Attempts up to 3 retries if errors occur.
         max_retries = 3
         retry_delays = [1, 2, 4]  # Exponential backoff
@@ -169,3 +170,36 @@ class WeatherDataCollector:
         # If parsing fails (e.g., raw_data['main']['temp'] doesn’t exist or is not a float), the error is logged and the 
         # result is discarded.
 
+def get_open_meteo_weather(self, city: str) -> Optional[Dict]:
+    """Try to get current weather from Open-Meteo API."""
+    coords = self.get_coordinates_for_city(city)
+    if not coords:
+        self.logger.warning(f"Could not get coordinates for city: {city}")
+        return None
+    
+    params = {
+        "latitude": coords["lat"],
+        "longitude": coords["lon"],
+        "current_weather": "true"
+    }
+    response = self.make_api_request("", params=params, full_url="https://api.open-meteo.com/v1/forecast")
+    
+    if response and "current_weather" in response:
+        current = response["current_weather"]
+        return {
+            'timestamp': datetime.now().isoformat(),
+            'city': city,
+            'country': "N/A",  # Open-Meteo doesn't return country
+            'temperature': float(current["temperature"]),
+            'feels_like': float(current["temperature"]),  # Open-Meteo doesn't give this, so use temp
+            'humidity': 0,  # Not provided
+            'pressure': 0,  # Not provided
+            'weather_main': "Unknown",
+            'weather_description': "Open-Meteo",
+            'wind_speed': float(current["windspeed"]),
+            'wind_direction': int(current["winddirection"]),
+            'cloudiness': 0,  # Not provided
+            'visibility': 10000,  # Assume default
+            'api_timestamp': datetime.fromtimestamp(current["time"]).isoformat()
+        }
+    return None
