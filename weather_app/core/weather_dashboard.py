@@ -14,9 +14,11 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from matplotlib.figure import Figure
 import random
 import requests
-import os
+from seaborn import seaborn
 from core. weather_data_collector import WeatherDataCollector
 from dotenv import load_dotenv
+import os 
+
 
 class WeatherDashboard:
     def __init__(self, root):
@@ -206,8 +208,19 @@ class WeatherDashboard:
             messagebox.showerror("Input Error", "Please enter a city name.")
             return
         try:
-            live_data = self.get_weather_data(city)
-            self.weather_data[city] = [live_data]
+            from_date = self.get_date_range()[0].date().isoformat()
+            to_date = self.get_date_range()[-1].date().isoformat()
+
+            coords = self.get_get_coordinates_for_city(city)
+            if not coords:
+                raise Exception("Invalid city coordinates.")
+            
+            records = self.get_historical_weather(coords["lat"], coords["lon"], from_date, to_date)
+            self.weather_data[city] = records
+
+
+
+
             self.current_city = city
             self.update_display()
         except Exception as e:
@@ -246,12 +259,19 @@ class WeatherDashboard:
         self.display_comparison(city1, data1, city2, data2)
     
     def display_comparison(self, city1, data1, city2, data2):
+        # Handle temperature conversion based on selected unit
+        if self.temperature_unit.get() == "C":
+            temp1 = f"{self.convert_temperature(data1['temperature'], to_celsius=True)}°C"
+            temp2 = f"{self.convert_temperature(data2['temperature'], to_celsius=True)}°C"
+        else:
+            temp1 = f"{data1['temperature']}°F"
+            temp2 = f"{data2['temperature']}°F"
         msg = (
             f"Comparing {city1} and {city2}:\n\n"
-            f"Temperature: {data1['temperature']}°C vs {data2['temperature']}°C\n"
+            f"Temperature: {temp1} vs {temp2}\n"
             f"Humidity: {data1['humidity']}% vs {data2['humidity']}%\n"
             f"Wind Speed: {data1['wind_speed']} km/h vs {data2['wind_speed']} km/h\n"
-            f"Conditions: {data1['weather_description']} vs {data2['weather_description']}"
+            f"Conditions: {data1['conditions']} vs {data2['conditions']}"
         )
         messagebox.showinfo("City Comparison", msg)
     
