@@ -110,8 +110,16 @@ class WeatherDataCollector:
 
     def get_current_weather(self, city: str, country_code: str = None) -> Optional[Dict]:
         """
-        Fetch current weather data for a specific location.
+        Try Open-Meteo first. Fallback to OpenWeatherMap
         """
+
+        #Try Open-Meteo
+        data = self.get_open_meteo_weather(city)
+        if data:
+            self.logger.info("Fetched data from Open-Meteo")
+            return data
+
+        "Fall back to OpenWeatherMap"
         location = city
         if country_code:
             location += f",{country_code}"
@@ -124,6 +132,7 @@ class WeatherDataCollector:
         
         raw_data = self.make_api_request('weather', params)
         if raw_data:
+            self.logger.info("Fetched data from OpenWeatherMap (fallback)")
             return self._validate_and_clean_current_weather(raw_data)
         return None
     
