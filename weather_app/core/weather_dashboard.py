@@ -20,8 +20,7 @@ from dotenv import load_dotenv
 
 class WeatherDashboard:
     def __init__(self, root):
-        load_dotenv() # Load environment variables from .env file
-
+        self.API_call = WeatherDataCollector(api_key=os.getenv('OPENWEATHER_API_KEY'))
         """Initialize the Weather Dashboard GUI"""      
         
         self.root = root
@@ -251,7 +250,7 @@ class WeatherDashboard:
             f"Temperature: {data1['temperature']}°C vs {data2['temperature']}°C\n"
             f"Humidity: {data1['humidity']}% vs {data2['humidity']}%\n"
             f"Wind Speed: {data1['wind_speed']} km/h vs {data2['wind_speed']} km/h\n"
-            f"Conditions: {data1['weather_description']} vs {data2['weather_description']}"
+            # f"Conditions: {data1['weather_description']} vs {data2['weather_description']}"
         )
         messagebox.showinfo("City Comparison", msg)
     

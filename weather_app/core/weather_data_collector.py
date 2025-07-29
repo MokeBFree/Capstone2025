@@ -89,24 +89,6 @@ class WeatherDataCollector:
         # If all attempts fail, it logs a critical error and returns None.
         return None #lines 42 - 90 Error Handling
     
-    def get_current_weather(self, city: str, country_code: str = None) -> Optional[Dict]:
-        """
-        Fetch current weather data for a specific location.
-        """
-        location = city
-        if country_code:
-            location += f",{country_code}"
-        # Combines the city and country code into one location string.S
-                
-        params = {
-            'q': location,
-            'units': 'metric'
-        }
-        
-        raw_data = self.make_api_request('weather', params)
-        if raw_data:
-            return self._validate_and_clean_current_weather(raw_data)
-        return None
     
     def _validate_and_clean_current_weather(self, raw_data: Dict) -> Optional[Dict]:
         """
@@ -151,3 +133,21 @@ class WeatherDataCollector:
         # If parsing fails (e.g., raw_data['main']['temp'] doesn’t exist or is not a float), the error is logged and the 
         # result is discarded.
 
+    def get_current_weather(self, city: str, country_code: str = None) -> Optional[Dict]:
+        """
+        Fetch current weather data for a specific location.
+        """
+        location = city
+        if country_code:
+            location += f",{country_code}"
+        # Combines the city and country code into one location string.S
+                
+        params = {
+            'q': location,
+            'units': 'metric'
+        }
+        
+        raw_data = self.make_api_request('weather', params)
+        if raw_data:
+            return self._validate_and_clean_current_weather(raw_data)
+        return None
