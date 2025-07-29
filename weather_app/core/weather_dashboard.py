@@ -250,7 +250,7 @@ class WeatherDashboard:
             f"Temperature: {data1['temperature']}°C vs {data2['temperature']}°C\n"
             f"Humidity: {data1['humidity']}% vs {data2['humidity']}%\n"
             f"Wind Speed: {data1['wind_speed']} km/h vs {data2['wind_speed']} km/h\n"
-            # f"Conditions: {data1['weather_description']} vs {data2['weather_description']}"
+            # f"Conditions: {data1['conditions']} vs {data2['conditions']}"
         )
         messagebox.showinfo("City Comparison", msg)
     
