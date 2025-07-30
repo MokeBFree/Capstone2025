@@ -171,7 +171,7 @@ class WeatherDashboard:
 		city_data = [d for d in self.weather_data[city] if d is not None]
 		# Filter data by date range (dates in date_list)
 		filtered = [d for d in city_data 
-					if datetime.fromisoformat(d['timestamp']).date() in [dt.date() for dt in date_list]]
+					if d['timestamp'].date() in [dt.date() for dt in date_list]]
 		if not filtered:
 			self.temp_label.config(text="Temperature: --")
 			self.humidity_label.config(text="Humidity: --")
