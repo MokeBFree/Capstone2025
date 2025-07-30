@@ -228,7 +228,7 @@ class WeatherDashboard:
 			messagebox.showerror("Input Error", "Please enter a city name.")
 			return
 		try:
-			live_data = self.collector.get_current_weather(city)
+			live_data = meteo_call.get_weather(city)
 			self.weather_data[city] = [live_data]
 			self.current_city = city
 			self.update_display()
