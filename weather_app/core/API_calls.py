@@ -25,7 +25,7 @@ class meteo_call:
 	    "longitude": lon,
 	    "current": ["temperature_2m", "is_day", "precipitation", "relative_humidity_2m", "rain"],     # the order of "current" matters - these must match exact variable names from OpenMeteo
 	    "timezone": "America/Denver",
-	    "past_days": 7,
+	    "past_days": past_days,
 	    "wind_speed_unit": "mph",
 	    "temperature_unit": "fahrenheit",
 	    "precipitation_unit": "inch",
