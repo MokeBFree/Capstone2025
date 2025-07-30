@@ -59,5 +59,6 @@ class API_call:
 
 # # debugging print statements
 
+# api = API_call()
 # weather = get_weather(39.7392, -104.9903)   - calls get_weather with coords
 # print(f"current temp: {weather['temperature']}")  - returns dictionary value "temperature" for coords

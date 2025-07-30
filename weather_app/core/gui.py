@@ -6,7 +6,7 @@
 #  Add error handling for edge cases
 
 import tkinter as tk
-from tkinter import ttk, messagebox
+from tkinter import ttk, messagebox, simpledialog
 from datetime import datetime, timedelta
 import matplotlib as mplt
 import matplotlib.pyplot as plt
@@ -15,10 +15,12 @@ from matplotlib.figure import Figure
 import random
 import requests
 import os
-from core. weather_data_collector import WeatherDataCollector
+from core.meteo_call import API_call
 
 class WeatherDashboard:
     def __init__(self, root):
+        self.API_call = API_call()
+        
         """Initialize the Weather Dashboard GUI"""      
         
         self.root = root
@@ -26,8 +28,13 @@ class WeatherDashboard:
         self.root.geometry("900x700")
         
         # Initialize data storage
-        self.current_city = "Denver"  # Default city
-        default_data = self.collector.get_current_weather(self.current_city)
+        user_city = tk.simpledialog.askstring("City Input", "Where's your sky?")
+        
+        if not user_city:
+            user_city = "Denver"
+        
+        self.current_city = user_city
+        default_data = self.API_call.get_weather(lat, lon)
         self.weather_data = {self.current_city: [default_data] if default_data else []}
         
         
@@ -38,7 +45,7 @@ class WeatherDashboard:
         # # Create the GUI
         # self.create_widgets()
 
-    #             # Compare Cities
+    #             # Compare Cities text entry
     #     self.city1_entry = tk.Entry(root)
     #     self.city1_entry.grid(row=3, column=1)
 
