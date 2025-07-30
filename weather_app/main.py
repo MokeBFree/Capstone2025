@@ -1,6 +1,5 @@
-from core.weather_data_collector import WeatherDataCollector
 from weather_app.core.gui import WeatherDashboard
-from core.storage import save_last_city, load_last_city, log_weather_data
+from weather_app.core.storage import save_last_city, load_last_city, log_weather_data
 
 from dotenv import load_dotenv
 from datetime import datetime

@@ -15,26 +15,36 @@ from matplotlib.figure import Figure
 import random
 import requests
 import os
-from core.meteo_call import API_call
+from weather_app.core.API_calls import meteo_call
 
 class WeatherDashboard:
     def __init__(self, root):
-        self.API_call = API_call()
-        
+        self.api_call = meteo_call()
+
         """Initialize the Weather Dashboard GUI"""      
         
-        self.root = root
+        self.root = tk.Tk()
         self.root.title("Weather Dashboard")
         self.root.geometry("900x700")
         
-        # Initialize data storage
-        user_city = tk.simpledialog.askstring("City Input", "Where's your sky?")
+        # Ask for User's City
+        user_city = simpledialog.askstring("City Input", "Where's your sky?")
         
         if not user_city:
             user_city = "Denver"
         
         self.current_city = user_city
-        default_data = self.API_call.get_weather(lat, lon)
+        coords = self.api_call.get_coordinates_for_city(user_city)
+        
+        if coords:
+            lat = coords["lat"]
+            lon = coords["lon"]
+            default_data = self.api_call.get_weather(lat, lon)
+
+        else: 
+            messagebox.showerror("City Error", f"Could not find coordinates for {user_city}.")
+                                 
+        #initialize data                         
         self.weather_data = {self.current_city: [default_data] if default_data else []}
         
         
