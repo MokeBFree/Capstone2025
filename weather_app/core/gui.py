@@ -164,7 +164,7 @@ class WeatherDashboard:
 	def update_display(self):
 		"""Update all weather displays with current selections"""
 		city = self.city_entry.get().strip()
-		date_list = self.get_date_range()
+		# date_list = self.get_date_range()
 		if city not in self.weather_data:
 			messagebox.showerror("City Not Found", f"City '{city}' not found in data.")
 			return
