@@ -5,6 +5,8 @@ import logging # For tracking activity, errors, and debugging info.
 from datetime import datetime, timedelta #To handle timestamps.
 from typing import Dict, List, Optional # Provides type hints like Dict, List, and Optional.
 import os # For accessing environment variables (used in related configs).
+from dotenv import load_dotenv
+
 
 class WeatherDataCollector:
     """
@@ -14,6 +16,7 @@ class WeatherDataCollector:
     This class encapsulates everything needed to fetch, validate, and clean 
     weather data from the OpenWeatherMap API in a resilient and reusable way.
     """
+    load_dotenv()
     
     def __init__(self, api_key: str, base_url: str = "http://api.openweathermap.org/data/2.5"): 
         # Store API credentials and base URL
@@ -39,6 +42,10 @@ class WeatherDataCollector:
             time.sleep(sleep_time)
         self.last_request_time = time.time()
      
+    def _get_api_key(self) -> str:
+        """Get the API key from environment or class default."""
+        return self.api_key or os.getenv('OPENWEATHER_API_KEY')
+
     def make_api_request(self, endpoint: str, params: Dict) -> Optional[Dict]: #lines 42 - 90 Error Handling
         """
         Make a robust API request with error handling and retries.
@@ -47,7 +54,8 @@ class WeatherDataCollector:
         
         # Attaches the API key to the query parameters.
         # Constructs the full API URL.
-        params['appid'] = self.api_key
+
+        params['appid'] = self._get_api_key()
         url = f"{self.base_url}/{endpoint}"
         
         # Attempts up to 3 retries if errors occur.
