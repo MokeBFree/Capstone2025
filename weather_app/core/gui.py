@@ -236,15 +236,15 @@ class WeatherDashboard:
 			messagebox.showerror("API Error", str(e))
 	   
 	   
-	# def on_clear_clicked(self):
-	#     """Handle clear/reset button click"""
-	#     # Reset inputs to defaults
-	#     self.city_entry.delete(0, tk.END)
-	#     self.city_entry.insert(0, "New York")
-	#     self.date_range.set("Last 7 Days")
-	#     self.temperature_unit.set("F")
-	#     self.current_city = "New York"
-	#     self.update_display()
+	def on_clear_clicked(self):
+		"""Handle clear/reset button click"""
+		# Reset inputs to defaults
+		self.city_entry.delete(0, tk.END)
+		self.city_entry.insert(0, "Denver")
+		self.date_range.set("Last 7 Days")
+		self.temperature_unit.set("F")
+		self.current_city = "Denver"
+		self.update_display()
 
 	# # def on_compare_clicked(self):
 	# #     """Handle compare button click"""
