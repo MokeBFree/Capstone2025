@@ -9,7 +9,7 @@ import requests
 import os
 from tkinter import ttk
 
-
+load_dotenv()
 
 def main():
     root = tk.Tk()
