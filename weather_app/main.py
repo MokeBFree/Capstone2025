@@ -1,6 +1,6 @@
 from core.config import Config #needs to import the config file to access the API key and URL
 from core.weather_data_collector import WeatherDataCollector
-from core.weather_dashboard import WeatherDashboard
+from weather_app.core.gui import WeatherDashboard
 from core.storage import save_last_city, load_last_city, log_weather_data
 
 from dotenv import load_dotenv

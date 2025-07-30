@@ -15,12 +15,11 @@ from matplotlib.figure import Figure
 import random
 import requests
 import os
-from core. weather_data_collector import WeatherDataCollector
+from core. import
 from dotenv import load_dotenv
 
 class WeatherDashboard:
     def __init__(self, root):
-        self.API_call = WeatherDataCollector(api_key=os.getenv('OPENWEATHER_API_KEY'))
         """Initialize the Weather Dashboard GUI"""      
         
         self.root = root
