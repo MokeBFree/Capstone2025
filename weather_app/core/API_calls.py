@@ -18,7 +18,7 @@ class meteo_call:
 # The order of variables in hourly or daily is important to assign them correctly below
     self.url = "https://api.open-meteo.com/v1/forecast"
 
-  def get_weather(self, lat, lon) -> dict:
+  def get_weather(self, lat, lon, past_days=7) -> dict:
 
     params = {
 	    "latitude": lat,

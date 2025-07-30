@@ -227,11 +227,22 @@ class WeatherDashboard:
 		if not city:
 			messagebox.showerror("Input Error", "Please enter a city name.")
 			return
+		
+		# Determine past_days from dropdown
+		selection = self.date_range.get()
+		past_days = 7 if selection == "Last 7 Days" else 14 if selection == "Last 14 Days" else 30
+
 		try:
-			live_data = meteo_call.get_weather(city)
-			self.weather_data[city] = [live_data]
-			self.current_city = city
-			self.update_display()
+			coords = self.api_call.get_coordinates_for_city(city)
+			if coords:
+				lat = coords["lat"]
+				lon = coords["lon"]
+				live_data = self.api_call.get_weather(lat, lon, past_days=past_days)
+				self.weather_data[city] = [live_data]
+				self.current_city = city
+				self.update_display()
+			else:
+				messagebox.showerror("City Error", f"Could not find coordinates for {city}.")
 		except Exception as e:
 			messagebox.showerror("API Error", str(e))
 	   
