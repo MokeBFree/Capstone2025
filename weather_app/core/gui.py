@@ -295,9 +295,8 @@ class WeatherDashboard:
 	#     else:
 	#         return round(temp_f * 9 / 5 + 32, 1)
 	
-	# def get_date_range(self):
-	#     """Helper method to get the selected date range"""
-	#     selection = self.date_range.get()
-	#     days = 7 if selection == "Last 7 Days" else 14 if selection == "Last 14 Days" else 30
-	#     return [datetime.now() - timedelta(days=i) for i in range(days)][::-1]
-
+		def get_date_range(self):
+			"""Helper method to get the selected date range"""
+			selection = self.date_range.get()
+			days = 7 if selection == "Last 7 Days" else 14 if selection == "Last 14 Days" else 30
+			return [datetime.now() - timedelta(days=i) for i in range(days)][::-1]
