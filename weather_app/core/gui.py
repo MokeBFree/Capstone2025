@@ -97,9 +97,11 @@ class WeatherDashboard:
 
 		# Temperature unit radio buttons
 		ttk.Label(control_frame, text="Temperature:").grid(row=2, column=0, sticky=tk.W, pady=5)
-		self.temp_radio_f = ttk.Radiobutton(control_frame, text="Fahrenheit", variable=self.temperature_unit, value="F")
+		self.temp_radio_f = ttk.Radiobutton(control_frame, text="Fahrenheit", variable=self.temperature_unit, value="F",
+																			command = self.unit_change)
 		self.temp_radio_f.grid(row=2, column=1, sticky=tk.W)
-		self.temp_radio_c = ttk.Radiobutton(control_frame, text="Celsius", variable=self.temperature_unit, value="C")
+		self.temp_radio_c = ttk.Radiobutton(control_frame, text="Celsius", variable=self.temperature_unit, value="C",
+																			command = self.unit_change)
 		self.temp_radio_c.grid(row=2, column=2, sticky=tk.W)
 
 		# # Buttons
@@ -133,8 +135,9 @@ class WeatherDashboard:
 		self.root.columnconfigure(1, weight=1)
 		self.root.rowconfigure(2, weight=1)
 
-	
-
+	def unit_change(self):
+		"""Callback when temperature unit radio is changed"""
+		self.update_display()
 		
 
 		
@@ -188,7 +191,7 @@ class WeatherDashboard:
 		# Use most recent day for display metrics
 		latest = filtered[-1]
 
-		# Convert Temperature
+		# Show and Convert Temperature Display
 		temp = latest['temperature']
 		if self.temperature_unit.get() == "C": 
 			temp_disp = f"{self.convert_temperature(temp, to_celsius=True)} °C"
