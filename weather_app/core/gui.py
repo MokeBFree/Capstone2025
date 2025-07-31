@@ -187,11 +187,14 @@ class WeatherDashboard:
 		
 		# Use most recent day for display metrics
 		latest = filtered[-1]
+
+		# Convert Temperature
 		temp = latest['temperature']
 		if self.temperature_unit.get() == "C": 
 			temp_disp = f"{self.convert_temperature(temp, to_celsius=True)} °C"
 		else:
-			temp_disp = f"{temp} °F"
+			temp_disp = f"{round(temp, 1)} °F" 
+
 		self.temp_label.config(text=f"Temperature: {temp_disp}")
 		self.humidity_label.config(text=f"Humidity: {latest['relative_humidity']}%")
 
