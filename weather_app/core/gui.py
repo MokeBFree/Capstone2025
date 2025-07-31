@@ -172,6 +172,7 @@ class WeatherDashboard:
 			messagebox.showerror("City Not Found", f"City '{city}' not found in data.")
 			return
 		city_data = [d for d in self.weather_data[city] if d is not None]
+
 		# Filter data by date range (dates in date_list)
 		filtered = [d for d in city_data 
 					if d['timestamp'].date() in [dt.date() for dt in date_list]]
@@ -182,6 +183,7 @@ class WeatherDashboard:
 			self.plot.clear()
 			self.canvas.draw()
 			return
+		
 		# Use most recent day for display metrics
 		latest = filtered[-1]
 		temp = latest['temperature']
@@ -191,6 +193,7 @@ class WeatherDashboard:
 			temp_disp = f"{temp} °F"
 		self.temp_label.config(text=f"Temperature: {temp_disp}")
 		self.humidity_label.config(text=f"Humidity: {latest['humidity']}%")
+		
 		# self.precip_label.config(text=f"Precipitation: {latest['precipitation']} in")
 		self.current_city = city
 		self.update_chart()

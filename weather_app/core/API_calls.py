@@ -5,6 +5,7 @@ from typing import Optional, Dict
 import pandas as pd
 import requests_cache
 from retry_requests import retry
+from datetime import datetime
 
 class meteo_call:
   def __init__(self):
@@ -55,7 +56,7 @@ class meteo_call:
             "precipitation" : precipitation,
             "relative_humidity" : relative_humidity,
             "rain" : rain,
-            "timestamp" : current.Time()
+            "timestamp" : datetime.fromtimestamp(current.Time())
 
     }
 
