@@ -266,13 +266,15 @@ class WeatherDashboard:
 	   
 	def on_clear_clicked(self):
 		"""Handle clear/reset button click"""
-		# Reset inputs to defaults
 		self.city_entry.delete(0, tk.END)
-		self.city_entry.insert(0, "Denver")
 		self.date_range.set("Last 7 Days")
 		self.temperature_unit.set("F")
-		self.current_city = "Denver"
-		self.update_display()
+		self.current_weather_data = None
+		self.temp_label.config(text="Temperature: --")
+		self.humidity_label.config(text="Humidity: --")
+		self.precip_label.config(text="Precipitation: --")
+		self.plot.clear()
+		self.canvas.draw()
 
 	# # def on_compare_clicked(self):
 	# #     """Handle compare button click"""
