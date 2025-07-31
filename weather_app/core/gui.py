@@ -35,7 +35,7 @@ class WeatherDashboard:
 		
 		self.current_city = user_city
 		coords = self.api_call.get_coordinates_for_city(user_city)
-		
+
 		if coords:
 			lat = coords["lat"]
 			lon = coords["lon"]
@@ -167,7 +167,8 @@ class WeatherDashboard:
 		if not city:
 			city = self.current_city
 
-		# date_list = self.get_date_range()
+		date_list = self.get_date_range()
+
 		if city not in self.weather_data:
 			messagebox.showerror("City Not Found", f"City '{city}' not found in data.")
 			return
@@ -193,7 +194,7 @@ class WeatherDashboard:
 			temp_disp = f"{temp} °F"
 		self.temp_label.config(text=f"Temperature: {temp_disp}")
 		self.humidity_label.config(text=f"Humidity: {latest['humidity']}%")
-		
+
 		# self.precip_label.config(text=f"Precipitation: {latest['precipitation']} in")
 		self.current_city = city
 		self.update_chart()
@@ -301,8 +302,8 @@ class WeatherDashboard:
 	#     else:
 	#         return round(temp_f * 9 / 5 + 32, 1)
 	
-		def get_date_range(self):
-			"""Helper method to get the selected date range"""
-			selection = self.date_range.get()
-			days = 7 if selection == "Last 7 Days" else 14 if selection == "Last 14 Days" else 30
-			return [datetime.now() - timedelta(days=i) for i in range(days)][::-1]
+	def get_date_range(self):
+		"""Helper method to get the selected date range"""
+		selection = self.date_range.get()
+		days = 7 if selection == "Last 7 Days" else 14 if selection == "Last 14 Days" else 30
+		return [datetime.now() - timedelta(days=i) for i in range(days)][::-1]
