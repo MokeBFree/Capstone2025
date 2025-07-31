@@ -193,7 +193,7 @@ class WeatherDashboard:
 		else:
 			temp_disp = f"{temp} °F"
 		self.temp_label.config(text=f"Temperature: {temp_disp}")
-		self.humidity_label.config(text=f"Humidity: {latest['humidity']}%")
+		self.humidity_label.config(text=f"Humidity: {latest['relative_humidity']}%")
 
 		# self.precip_label.config(text=f"Precipitation: {latest['precipitation']} in")
 		self.current_city = city
