@@ -87,7 +87,7 @@ class WeatherDashboard:
 		ttk.Label(control_frame, text="City:").grid(row=0, column=0, sticky=tk.W, pady=5)
 		self.city_entry = ttk.Entry(control_frame)
 		self.city_entry.grid(row=0, column=1, pady=5, sticky=tk.W)
-		self.city_entry.insert(0, "Denver")
+		self.city_entry.insert(0, self.current_city)
 
 		# Date range combobox
 		ttk.Label(control_frame, text="When?").grid(row=1, column=0, sticky=tk.W, pady=5)
