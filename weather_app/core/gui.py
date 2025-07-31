@@ -45,7 +45,7 @@ class WeatherDashboard:
 			messagebox.showerror("City Error", f"Could not find coordinates for {user_city}.")
 								 
 		#initialize data                         
-		self.weather_data = {self.current_city: [default_data] if default_data else []}
+		self.weather_data = {self.current_city: [default_data]} if default_data else {}
 		
 		
 		# TODO: Add instance variables for storing user selections
@@ -164,6 +164,9 @@ class WeatherDashboard:
 	def update_display(self):
 		"""Update all weather displays with current selections"""
 		city = self.city_entry.get().strip()
+		if not city:
+			city = self.current_city
+
 		# date_list = self.get_date_range()
 		if city not in self.weather_data:
 			messagebox.showerror("City Not Found", f"City '{city}' not found in data.")
