@@ -295,12 +295,12 @@ class WeatherDashboard:
 	#     )
 	#     messagebox.showinfo("City Comparison", msg)
 	
-	# def convert_temperature(self, temp_f, to_celsius=True):
-	#     """Helper method to convert between temperature units"""
-	#     if to_celsius:
-	#         return round((temp_f - 32) * 5 / 9, 1)
-	#     else:
-	#         return round(temp_f * 9 / 5 + 32, 1)
+	def convert_temperature(self, temp_f, to_celsius=True):
+		"""Helper method to convert between temperature units"""
+		if to_celsius:
+			return round((temp_f - 32) * 5 / 9, 1)
+		else:
+			return round(temp_f * 9 / 5 + 32, 1)
 	
 	def get_date_range(self):
 		"""Helper method to get the selected date range"""
