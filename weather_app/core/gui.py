@@ -20,10 +20,11 @@ from weather_app.core.API_calls import meteo_call
 class WeatherDashboard:
 	def __init__(self, root):
 		self.api_call = meteo_call()
+		self.current_weather_data = None
 
 		"""Initialize the Weather Dashboard GUI"""      
 		
-		self.root = tk.Tk()
+		self.root = root
 		self.root.title("Weather Dashboard")
 		self.root.geometry("900x700")
 		
@@ -137,8 +138,10 @@ class WeatherDashboard:
 
 	def unit_change(self):
 		"""Callback when temperature unit radio is changed"""
-		self.update_display()
-		
+		if self.current_weather_data:
+			self.refresh_display_with_cached_data()
+		else:
+			self.update_display()
 
 		
 
@@ -180,6 +183,7 @@ class WeatherDashboard:
 		# Filter data by date range (dates in date_list)
 		filtered = [d for d in city_data 
 					if d['timestamp'].date() in [dt.date() for dt in date_list]]
+		self.current_weather_data = filtered
 		if not filtered:
 			self.temp_label.config(text="Temperature: --")
 			self.humidity_label.config(text="Humidity: --")
@@ -313,3 +317,18 @@ class WeatherDashboard:
 		selection = self.date_range.get()
 		days = 7 if selection == "Last 7 Days" else 14 if selection == "Last 14 Days" else 30
 		return [datetime.now() - timedelta(days=i) for i in range(days)][::-1]
+	
+	def refresh_display_with_cached_data(self):
+		"""Redraw label and chart using cached weather data and selected unit"""
+		latest = self.current_weather_data[-1]
+
+		temp = latest['temperature']
+		if self.temperature_unit.get() == "C":
+			temp_disp = f"{self.convert_temperature(temp, to_celsius=True)} °C"
+		else:
+			temp_disp = f"{round(temp, 1)} °F"
+
+		self.temp_label.config(text=f"Temperature: {temp_disp}")
+		self.humidity_label.config(text=f"Humidity: {latest['relative_humidity']}%")
+
+		self.update_chart()
