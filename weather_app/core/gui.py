@@ -199,34 +199,34 @@ class WeatherDashboard:
 		self.current_city = city
 		self.update_chart()
 	
-	# def update_chart(self):
-	#     """Update the matplotlib chart based on current selections"""
-	#     self.plot.clear()
-	#     city = self.city_entry.get().strip()
-	#     date_list = self.get_date_range()
-	#     if city not in self.weather_data:
-	#         self.canvas.draw()
-	#         return
-	#     city_data = self.weather_data[city]
-	#     filtered = [d for d in city_data 
-	#                 if datetime.fromisoformat(d['timestamp']).date() in [dt.date() for dt in date_list]]
-	#     if not filtered:
-	#         self.canvas.draw()
-	#         return
-	#     dates = [datetime.fromisoformat(d['timestamp']) for d in filtered]
-	#     temps = [d['temperature'] for d in filtered]
-	#     if self.temperature_unit.get() == "C":
-	#         temps = [self.convert_temperature(t, to_celsius=True) for t in temps]
-	#         ylabel = "Temperature (°C)"
-	#     else:
-	#         ylabel = "Temperature (°F)"
-	#     self.plot.plot(dates, temps, marker='o', color='tab:blue')
-	#     self.plot.set_title(f"Temperature Trend - {city}")
-	#     self.plot.set_ylabel(ylabel)
-	#     self.plot.set_xlabel("Date")
-	#     self.plot.grid(True, linestyle='--', alpha=0.5)
-	#     self.figure.autofmt_xdate()
-	#     self.canvas.draw()
+	def update_chart(self):
+		"""Update the matplotlib chart based on current selections"""
+		self.plot.clear()
+		city = self.city_entry.get().strip()
+		date_list = self.get_date_range()
+		if city not in self.weather_data:
+			self.canvas.draw()
+			return
+		city_data = self.weather_data[city]
+		filtered = [d for d in city_data 
+					if d['timestamp'].date() in [dt.date() for dt in date_list]]
+		if not filtered:
+			self.canvas.draw()
+			return
+		dates = [d['timestamp'] for d in filtered]
+		temps = [d['temperature'] for d in filtered]
+		if self.temperature_unit.get() == "C":
+			temps = [self.convert_temperature(t, to_celsius=True) for t in temps]
+			ylabel = "Temperature (°C)"
+		else:
+			ylabel = "Temperature (°F)"
+		self.plot.plot(dates, temps, marker='o', color='tab:blue')
+		self.plot.set_title(f"Temperature Trend - {city}")
+		self.plot.set_ylabel(ylabel)
+		self.plot.set_xlabel("Date")
+		self.plot.grid(True, linestyle='--', alpha=0.5)
+		self.figure.autofmt_xdate()
+		self.canvas.draw()
 	
 	def on_update_clicked(self):
 		"""Handle update button click"""
