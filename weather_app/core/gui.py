@@ -110,7 +110,9 @@ class WeatherDashboard:
 		self.update_btn.grid(row=3, column=1, pady=10, sticky=tk.W)
 		self.clear_btn = ttk.Button(control_frame, text="Clear", command=self.on_clear_clicked)
 		self.clear_btn.grid(row=3, column=2, pady=10, sticky=tk.W)
-
+		self.compare_btn = ttk.Button(control_frame, text="Compare Cities", command=self.on_compare_clicked)
+		self.compare_btn.grid(row=4, column=1, pady=10, sticky=tk.W)
+		
 		# Display Frame (Right Side)
 		display_frame = ttk.LabelFrame(self.root, text="Current Weather", padding="10")
 		display_frame.grid(row=1, column=1, sticky=(tk.N, tk.S, tk.W, tk.E), padx=10)
@@ -286,26 +288,45 @@ class WeatherDashboard:
 	# #         return
 		
 	# #     try:
-	# #         data1 = self.collector.get_current_weather(city1)
-	# #         data2 = self.collector.get_current_weather(city2)
+	# #         live_data1 = self.api_call.get_weather(lat1, lon1)
+	# #         live_data2 = self.api_call.get_weather(lat2, lon2)
 	# #     except Exception as e:
 	# #         messagebox.showerror("API Error", f"Fetch didn't work: {e}")
 	# #         return
 		
-	# #     self.weather_data[city1] =[data1]  # get most recent entry
-	# #     self.weather_data[city2] =[data2]
+	# #     self.weather_data[city1] =[live_data1]  # get most recent entry
+	# #     self.weather_data[city2] =[live_data2]
 
-	# #     self.display_comparison(city1, data1, city2, data2)
+	# #     self.display_comparison(city1, live_data1, city2, live_data2)
 	
-	# def display_comparison(self, city1, data1, city2, data2):
+	# def display_comparison(self, city1, live_data1, city2, live_data2):
 	#     msg = (
 	#         f"Comparing {city1} and {city2}:\n\n"
-	#         f"Temperature: {data1['temperature']}°C vs {data2['temperature']}°C\n"
-	#         f"Humidity: {data1['humidity']}% vs {data2['humidity']}%\n"
-	#         f"Wind Speed: {data1['wind_speed']} km/h vs {data2['wind_speed']} km/h\n"
-	#         # f"Conditions: {data1['conditions']} vs {data2['conditions']}"
+	#         f"Temperature: {live_data1['temperature']}°C vs {live_data2['temperature']}°C\n"
+	#         f"Humidity: {live_data1['relative_humidity']}% vs {live_data2['relative_humidity']}%\n"
+	#         f"Wind Speed: {live_data1['wind_speed']} km/h vs {live_data2['wind_speed']} km/h\n"
+	#         # f"Conditions: {live_data1['conditions']} vs {live_data2['conditions']}"
 	#     )
 	#     messagebox.showinfo("City Comparison", msg)
+				# self.plot.clear()
+
+# 			# Plot city 1
+# 				dates1 = [d['timestamp'] for d in live_data1]
+# 				temps1 = [d['temperature'] for d in live_data1]
+# 				self.plot.plot(dates1, temps1, marker='o', label=city1)
+
+# # Plot city 2
+# 				dates2 = [d['timestamp'] for d in live_data2]
+# 				temps2 = [d['temperature'] for d in live_data2]
+# 				self.plot.plot(dates2, temps2, marker='o', label=city2)
+
+# 				self.plot.set_title(f"Temperature Comparison: {city1} vs {city2}")
+# 				self.plot.set_xlabel("Date")
+# 				self.plot.set_ylabel("Temperature (°F)" if self.temperature_unit.get() == "F" else "Temperature (°C)")
+# 				self.plot.grid(True, linestyle='--', alpha=0.5)
+# 				self.plot.legend()
+# 				self.figure.autofmt_xdate()
+#					self.canvas.draw()
 	
 	def convert_temperature(self, temp_f, to_celsius=True):
 		"""Helper method to convert between temperature units"""
