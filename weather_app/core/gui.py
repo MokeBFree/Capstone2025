@@ -257,7 +257,7 @@ class WeatherDashboard:
 				log_weather_data(city, live_data['temperature'], desc)
 
 				self.update_display()
-				
+
 			else:
 				messagebox.showerror("City Error", f"Could not find coordinates for {city}.")
 		except Exception as e:
@@ -307,34 +307,33 @@ class WeatherDashboard:
 
 		self.display_comparison(city1, live_data1, city2, live_data2)
 	
-	def display_comparison(self, city1, live_data1, city2, live_data2):
-		msg = (
-			f"Comparing {city1} and {city2}:\n\n"
-			f"Temperature: {live_data1['temperature']}°C vs {live_data2['temperature']}°C\n"
-			f"Humidity: {live_data1['relative_humidity']}% vs {live_data2['relative_humidity']}%\n"
-			# f"Wind Speed: {live_data1['wind_speed']} km/h vs {live_data2['wind_speed']} km/h\n"
-			# f"Conditions: {live_data1['conditions']} vs {live_data2['conditions']}"
-		)
-		messagebox.showinfo("City Comparison", msg)
+	def display_comparison_current(self, city1, live_data1, city2, live_data2):
+		"""Displays current weather comparison between two cities"""
 		self.plot.clear()
 
-		# Plot city 1
-		dates1 = [d['timestamp'] for d in live_data1]
-		temps1 = [d['temperature'] for d in live_data1]
-		self.plot.plot(dates1, temps1, marker='o', label=city1)
+		temps = [live_data1['temperature'], live_data2['temperature']]
+		humidities = [live_data1['relative_humidity'], live_data2['relative_humidity']]
+		cities = [city1, city2]
 
-		# Plot city 2
-		dates2 = [d['timestamp'] for d in live_data2]
-		temps2 = [d['temperature'] for d in live_data2]
-		self.plot.plot(dates2, temps2, marker='o', label=city2)
+		x_positions = [1, 2]
 
-		self.plot.set_title(f"Temperature Comparison: {city1} vs {city2}")
-		self.plot.set_xlabel("Date")
-		self.plot.set_ylabel("Temperature (°F)" if self.temperature_unit.get() == "F" else "Temperature (°C)")
+    # Plot bar chart for clear comparison
+		self.plot.bar(x_positions, temps, color=['skyblue', 'orange'])
+		self.plot.set_xticks(x_positions)
+		self.plot.set_xticklabels(cities)
+		ylabel = "Temperature (°F)" if self.temperature_unit.get() == "F" else "Temperature (°C)"
+		self.plot.set_ylabel(ylabel)
+		self.plot.set_title(f"Current Temperature: {city1} vs {city2}")
 		self.plot.grid(True, linestyle='--', alpha=0.5)
-		self.plot.legend()
-		self.figure.autofmt_xdate()
 		self.canvas.draw()
+
+			# Informational popup
+		msg = (
+        f"Comparing {city1} and {city2} (Current Conditions):\n\n"
+        f"Temperature: {temps[0]} vs {temps[1]}\n"
+        f"Humidity: {humidities[0]}% vs {humidities[1]}%"
+    )
+		messagebox.showinfo("City Comparison", msg)
 	
 	def convert_temperature(self, temp_f, to_celsius=True):
 		"""Helper method to convert between temperature units"""
