@@ -278,26 +278,36 @@ class WeatherDashboard:
 		self.plot.clear()
 		self.canvas.draw()
 
-	# # def on_compare_clicked(self):
-	# #     """Handle compare button click"""
-	# #     city1 = self.city1_entry.get().strip()
-	# #     city2 = self.city2_entry.get().strip()
+	def on_compare_clicked(self):
+		"""Handle compare button click"""
+		city1 = self.city1_entry.get().strip()
+		city2 = self.city2_entry.get().strip()
 
-	# #     if not city1 or not city2:
-	# #         messagebox.showerror("You need both cities for a comparison.")
-	# #         return
-		
-	# #     try:
-	# #         live_data1 = self.api_call.get_weather(lat1, lon1)
-	# #         live_data2 = self.api_call.get_weather(lat2, lon2)
-	# #     except Exception as e:
-	# #         messagebox.showerror("API Error", f"Fetch didn't work: {e}")
-	# #         return
-		
-	# #     self.weather_data[city1] =[live_data1]  # get most recent entry
-	# #     self.weather_data[city2] =[live_data2]
+		if not city1 or not city2:
+			messagebox.showerror("You need both cities for a comparison.")
+			return
 
-	# #     self.display_comparison(city1, live_data1, city2, live_data2)
+		try:
+			coords1 = self.api_call.get_coordinates_for_city(city1)
+			coords2 = self.api_call.get_coordinates_for_city(city2)
+
+			if not coords1 or not coords2:
+				messagebox.showerror("City Error", "Could not find one or both cities.")
+				return
+
+			lat1, lon1 = coords1["lat"], coords1["lon"]
+			lat2, lon2 = coords2["lat"], coords2["lon"]
+
+			live_data1 = self.api_call.get_weather(lat1, lon1)
+			live_data2 = self.api_call.get_weather(lat2, lon2)
+		except Exception as e:
+			messagebox.showerror("API Error", f"Fetch didn't work: {e}")
+			return
+
+		self.weather_data[city1] = [live_data1]  # get most recent entry
+		self.weather_data[city2] = [live_data2]
+
+		self.display_comparison(city1, live_data1, city2, live_data2)
 	
 	# def display_comparison(self, city1, live_data1, city2, live_data2):
 	#     msg = (
