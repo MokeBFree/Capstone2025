@@ -309,34 +309,34 @@ class WeatherDashboard:
 
 		self.display_comparison(city1, live_data1, city2, live_data2)
 	
-	# def display_comparison(self, city1, live_data1, city2, live_data2):
-	#     msg = (
-	#         f"Comparing {city1} and {city2}:\n\n"
-	#         f"Temperature: {live_data1['temperature']}°C vs {live_data2['temperature']}°C\n"
-	#         f"Humidity: {live_data1['relative_humidity']}% vs {live_data2['relative_humidity']}%\n"
-	#         f"Wind Speed: {live_data1['wind_speed']} km/h vs {live_data2['wind_speed']} km/h\n"
-	#         # f"Conditions: {live_data1['conditions']} vs {live_data2['conditions']}"
-	#     )
-	#     messagebox.showinfo("City Comparison", msg)
-				# self.plot.clear()
+def display_comparison(self, city1, live_data1, city2, live_data2):
+	msg = (
+		f"Comparing {city1} and {city2}:\n\n"
+		f"Temperature: {live_data1['temperature']}°C vs {live_data2['temperature']}°C\n"
+		f"Humidity: {live_data1['relative_humidity']}% vs {live_data2['relative_humidity']}%\n"
+		f"Wind Speed: {live_data1['wind_speed']} km/h vs {live_data2['wind_speed']} km/h\n"
+		# f"Conditions: {live_data1['conditions']} vs {live_data2['conditions']}"
+	)
+	messagebox.showinfo("City Comparison", msg)
+	self.plot.clear()
 
-# 			# Plot city 1
-# 				dates1 = [d['timestamp'] for d in live_data1]
-# 				temps1 = [d['temperature'] for d in live_data1]
-# 				self.plot.plot(dates1, temps1, marker='o', label=city1)
+	# Plot city 1
+	dates1 = [d['timestamp'] for d in live_data1]
+	temps1 = [d['temperature'] for d in live_data1]
+	self.plot.plot(dates1, temps1, marker='o', label=city1)
 
-# # Plot city 2
-# 				dates2 = [d['timestamp'] for d in live_data2]
-# 				temps2 = [d['temperature'] for d in live_data2]
-# 				self.plot.plot(dates2, temps2, marker='o', label=city2)
+	# Plot city 2
+	dates2 = [d['timestamp'] for d in live_data2]
+	temps2 = [d['temperature'] for d in live_data2]
+	self.plot.plot(dates2, temps2, marker='o', label=city2)
 
-# 				self.plot.set_title(f"Temperature Comparison: {city1} vs {city2}")
-# 				self.plot.set_xlabel("Date")
-# 				self.plot.set_ylabel("Temperature (°F)" if self.temperature_unit.get() == "F" else "Temperature (°C)")
-# 				self.plot.grid(True, linestyle='--', alpha=0.5)
-# 				self.plot.legend()
-# 				self.figure.autofmt_xdate()
-#					self.canvas.draw()
+	self.plot.set_title(f"Temperature Comparison: {city1} vs {city2}")
+	self.plot.set_xlabel("Date")
+	self.plot.set_ylabel("Temperature (°F)" if self.temperature_unit.get() == "F" else "Temperature (°C)")
+	self.plot.grid(True, linestyle='--', alpha=0.5)
+	self.plot.legend()
+	self.figure.autofmt_xdate()
+	self.canvas.draw()
 	
 	def convert_temperature(self, temp_f, to_celsius=True):
 		"""Helper method to convert between temperature units"""
