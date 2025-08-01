@@ -16,6 +16,7 @@ import random
 import requests
 import os
 from weather_app.core.API_calls import meteo_call
+from weather_app.core.storage import log_weather_data
 
 class WeatherDashboard:
 	def __init__(self, root):
@@ -27,26 +28,12 @@ class WeatherDashboard:
 		self.root = root
 		self.root.title("Weather Dashboard")
 		self.root.geometry("900x700")
-		
-		# Ask for User's City
-		user_city = simpledialog.askstring("City Input", "Where's your sky?")
-		
-		if not user_city:
-			user_city = "Denver"
-		
-		self.current_city = user_city
-		coords = self.api_call.get_coordinates_for_city(user_city)
-
-		if coords:
-			lat = coords["lat"]
-			lon = coords["lon"]
-			default_data = self.api_call.get_weather(lat, lon)
-
-		else: 
-			messagebox.showerror("City Error", f"Could not find coordinates for {user_city}.")
 								 
+		self.city_entry = ttk.Entry(root)
+		self.current_city = " "
+
 		#initialize data                         
-		self.weather_data = {self.current_city: [default_data]} if default_data else {}
+		self.weather_data = {}
 		
 		
 		# TODO: Add instance variables for storing user selections
@@ -63,11 +50,6 @@ class WeatherDashboard:
 
 
 	#             # Compare Cities text entry
-		self.city1_entry = tk.Entry(root)
-		self.city1_entry.grid(row=3, column=1)
-
-		self.city2_entry = tk.Entry(root)
-		self.city2_entry.grid(row=4, column=1)
 		
 	def create_widgets(self):
 		"""Create and arrange all GUI widgets"""
@@ -110,8 +92,18 @@ class WeatherDashboard:
 		self.update_btn.grid(row=3, column=1, pady=10, sticky=tk.W)
 		self.clear_btn = ttk.Button(control_frame, text="Clear", command=self.on_clear_clicked)
 		self.clear_btn.grid(row=3, column=2, pady=10, sticky=tk.W)
+
+		# Compare Cities input fields
+		ttk.Label(control_frame, text="City 1:").grid(row=4, column=0, sticky=tk.W, pady=5)
+		self.city1_entry = ttk.Entry(control_frame)
+		self.city1_entry.grid(row=4, column=1, sticky=tk.W)
+
+		ttk.Label(control_frame, text="City 2:").grid(row=5, column=0, sticky=tk.W, pady=5)
+		self.city2_entry = ttk.Entry(control_frame)
+		self.city2_entry.grid(row=5, column=1, sticky=tk.W)
+
 		self.compare_btn = ttk.Button(control_frame, text="Compare Cities", command=self.on_compare_clicked)
-		self.compare_btn.grid(row=4, column=1, pady=10, sticky=tk.W)
+		self.compare_btn.grid(row=6, column=1, pady=10, sticky=tk.W)
 		
 		# Display Frame (Right Side)
 		display_frame = ttk.LabelFrame(self.root, text="Current Weather", padding="10")
@@ -259,7 +251,13 @@ class WeatherDashboard:
 				live_data = self.api_call.get_weather(lat, lon, past_days=past_days)
 				self.weather_data[city] = [live_data]
 				self.current_city = city
+
+ # Log historical data to CSV
+				desc = f"Humidity: {live_data['relative_humidity']}%, Precip: {live_data['precipitation']} in"
+				log_weather_data(city, live_data['temperature'], desc)
+
 				self.update_display()
+				
 			else:
 				messagebox.showerror("City Error", f"Could not find coordinates for {city}.")
 		except Exception as e:
@@ -309,34 +307,34 @@ class WeatherDashboard:
 
 		self.display_comparison(city1, live_data1, city2, live_data2)
 	
-def display_comparison(self, city1, live_data1, city2, live_data2):
-	msg = (
-		f"Comparing {city1} and {city2}:\n\n"
-		f"Temperature: {live_data1['temperature']}°C vs {live_data2['temperature']}°C\n"
-		f"Humidity: {live_data1['relative_humidity']}% vs {live_data2['relative_humidity']}%\n"
-		f"Wind Speed: {live_data1['wind_speed']} km/h vs {live_data2['wind_speed']} km/h\n"
-		# f"Conditions: {live_data1['conditions']} vs {live_data2['conditions']}"
-	)
-	messagebox.showinfo("City Comparison", msg)
-	self.plot.clear()
+	def display_comparison(self, city1, live_data1, city2, live_data2):
+		msg = (
+			f"Comparing {city1} and {city2}:\n\n"
+			f"Temperature: {live_data1['temperature']}°C vs {live_data2['temperature']}°C\n"
+			f"Humidity: {live_data1['relative_humidity']}% vs {live_data2['relative_humidity']}%\n"
+			# f"Wind Speed: {live_data1['wind_speed']} km/h vs {live_data2['wind_speed']} km/h\n"
+			# f"Conditions: {live_data1['conditions']} vs {live_data2['conditions']}"
+		)
+		messagebox.showinfo("City Comparison", msg)
+		self.plot.clear()
 
-	# Plot city 1
-	dates1 = [d['timestamp'] for d in live_data1]
-	temps1 = [d['temperature'] for d in live_data1]
-	self.plot.plot(dates1, temps1, marker='o', label=city1)
+		# Plot city 1
+		dates1 = [d['timestamp'] for d in live_data1]
+		temps1 = [d['temperature'] for d in live_data1]
+		self.plot.plot(dates1, temps1, marker='o', label=city1)
 
-	# Plot city 2
-	dates2 = [d['timestamp'] for d in live_data2]
-	temps2 = [d['temperature'] for d in live_data2]
-	self.plot.plot(dates2, temps2, marker='o', label=city2)
+		# Plot city 2
+		dates2 = [d['timestamp'] for d in live_data2]
+		temps2 = [d['temperature'] for d in live_data2]
+		self.plot.plot(dates2, temps2, marker='o', label=city2)
 
-	self.plot.set_title(f"Temperature Comparison: {city1} vs {city2}")
-	self.plot.set_xlabel("Date")
-	self.plot.set_ylabel("Temperature (°F)" if self.temperature_unit.get() == "F" else "Temperature (°C)")
-	self.plot.grid(True, linestyle='--', alpha=0.5)
-	self.plot.legend()
-	self.figure.autofmt_xdate()
-	self.canvas.draw()
+		self.plot.set_title(f"Temperature Comparison: {city1} vs {city2}")
+		self.plot.set_xlabel("Date")
+		self.plot.set_ylabel("Temperature (°F)" if self.temperature_unit.get() == "F" else "Temperature (°C)")
+		self.plot.grid(True, linestyle='--', alpha=0.5)
+		self.plot.legend()
+		self.figure.autofmt_xdate()
+		self.canvas.draw()
 	
 	def convert_temperature(self, temp_f, to_celsius=True):
 		"""Helper method to convert between temperature units"""
