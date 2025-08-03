@@ -307,7 +307,7 @@ class WeatherDashboard:
 
 		self.display_comparison(city1, live_data1, city2, live_data2)
 	
-	def display_comparison_current(self, city1, live_data1, city2, live_data2):
+	def display_comparison(self, city1, live_data1, city2, live_data2):
 		"""Displays current weather comparison between two cities"""
 		self.plot.clear()
 
