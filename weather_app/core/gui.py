@@ -17,6 +17,8 @@ import requests
 import os
 from weather_app.core.API_calls import meteo_call
 from weather_app.core.storage import log_weather_data
+import csv
+from weather_app.core.storage import HISTORY_FILE
 
 class WeatherDashboard:
 	def __init__(self, root):
@@ -305,7 +307,7 @@ class WeatherDashboard:
 		self.weather_data[city1] = [live_data1]  # get most recent entry
 		self.weather_data[city2] = [live_data2]
 
-		self.display_comparison(city1, live_data1, city2, live_data2)
+		self.display_comparison_current(city1, live_data1, city2, live_data2)
 	
 	def display_comparison(self, city1, live_data1, city2, live_data2):
 		"""Displays current weather comparison between two cities"""
@@ -362,3 +364,39 @@ class WeatherDashboard:
 		self.humidity_label.config(text=f"Humidity: {latest['relative_humidity']}%")
 
 		self.update_chart()
+
+
+	def display_historical_trends(self, city):
+		"""Displays temperature trend from historical data for a single city"""
+		dates, temps = [], []
+
+		# Load historical data from CSV
+		with open(HISTORY_FILE, newline='') as f:
+				reader = csv.DictReader(f)
+				for row in reader:
+						if row['City'].lower() == city.lower():
+								date = datetime.strptime(row['Timestamp'], "%Y-%m-%d %H:%M")
+								temp = float(row['Temperature'])
+								dates.append(date)
+								temps.append(temp)
+
+		if not dates:
+				messagebox.showerror("Data Error", f"No historical data found for {city}.")
+				return
+
+    # Plot historical trend
+		self.plot.clear()
+		if self.temperature_unit.get() == "C":
+				temps = [self.convert_temperature(t, to_celsius=True) for t in temps]
+				ylabel = "Temperature (°C)"
+		
+		else:
+				ylabel = "Temperature (°F)"
+
+		self.plot.plot(dates, temps, marker='o', linestyle='-', color='purple')
+		self.plot.set_title(f"Temperature Trend (Historical) - {city}")
+		self.plot.set_xlabel("Date")
+		self.plot.set_ylabel(ylabel)
+		self.plot.grid(True, linestyle='--', alpha=0.5)
+		self.figure.autofmt_xdate()
+		self.canvas.draw()
