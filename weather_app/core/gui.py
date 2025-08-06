@@ -46,8 +46,6 @@ class WeatherDashboard:
 		# # Create the GUI
 		self.create_widgets()
 
-			# Initialize the display with default data
-		self.update_display()
 
 
 
@@ -307,7 +305,7 @@ class WeatherDashboard:
 		self.weather_data[city1] = [live_data1]  # get most recent entry
 		self.weather_data[city2] = [live_data2]
 
-		self.display_comparison_current(city1, live_data1, city2, live_data2)
+		self.display_comparison(city1, live_data1, city2, live_data2)
 	
 	def display_comparison(self, city1, live_data1, city2, live_data2):
 		"""Displays current weather comparison between two cities"""
