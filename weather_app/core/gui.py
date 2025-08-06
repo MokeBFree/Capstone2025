@@ -18,6 +18,8 @@ from weather_app.core.API_calls import meteo_call
 from weather_app.core.storage import log_weather_data
 import csv
 from weather_app.core.storage import HISTORY_FILE
+from weather_app.core.quiz import generate_quiz_tab
+
 
 class WeatherDashboard:
 	def __init__(self, root):
@@ -42,10 +44,15 @@ class WeatherDashboard:
 		self.temperature_unit = tk.StringVar(value ="F")
 
 
-		# # Create the GUI
+		# Create notebook and dashboard tab BEFORE calling create_widgets
+		self.notebook = ttk.Notebook(self.root)
+		self.notebook.grid(row=1, column=0, columnspan=2, sticky="nsew", padx=10, pady=10)
+
+		self.dashboard_tab = ttk.Frame(self.notebook)
+		self.notebook.add(self.dashboard_tab, text="Dashboard")
+
 		self.create_widgets()
-
-
+		generate_quiz_tab(self)
 
 
 	#             # Compare Cities text entry
@@ -54,7 +61,7 @@ class WeatherDashboard:
 		"""Create and arrange all GUI widgets"""
 
 		# Title Frame
-		title_frame = ttk.Frame(self.root, padding="10")
+		title_frame = ttk.Frame(self.dashboard_tab, padding="10")
 		title_frame.grid(row=0, column=0, columnspan=2, sticky=(tk.W, tk.E))
 
 		title_label = ttk.Label(title_frame, text="Weather Dashboard",
@@ -62,7 +69,7 @@ class WeatherDashboard:
 		title_label.pack()
 
 		# Control Frame (Left Side)
-		control_frame = ttk.LabelFrame(self.root, text="Controls", padding="10")
+		control_frame = ttk.LabelFrame(self.dashboard_tab, text="Controls", padding="10")
 		control_frame.grid(row=1, column=0, sticky=(tk.N, tk.S, tk.W, tk.E), padx=10)
 
 		# City entry
@@ -105,7 +112,7 @@ class WeatherDashboard:
 		self.compare_btn.grid(row=6, column=1, pady=10, sticky=tk.W)
 		
 		# Display Frame (Right Side)
-		display_frame = ttk.LabelFrame(self.root, text="Current Weather", padding="10")
+		display_frame = ttk.LabelFrame(self.dashboard_tab, text="Current Weather", padding="10")
 		display_frame.grid(row=1, column=1, sticky=(tk.N, tk.S, tk.W, tk.E), padx=10)
 
 		self.temp_label = ttk.Label(display_frame, text="Temperature: --")
@@ -116,7 +123,7 @@ class WeatherDashboard:
 		self.precip_label.grid(row=2, column=0, sticky=tk.W, pady=5)
 
 		# Visualization Frame (Bottom)
-		viz_frame = ttk.LabelFrame(self.root, text="Weather Trends", padding="10")
+		viz_frame = ttk.LabelFrame(self.dashboard_tab, text="Weather Trends", padding="10")
 		viz_frame.grid(row=2, column=0, columnspan=2, sticky=(tk.W, tk.E, tk.N, tk.S), padx=10, pady=10)
 
 		# Create matplotlib figure - DO NOT MODIFY THIS SECTION
