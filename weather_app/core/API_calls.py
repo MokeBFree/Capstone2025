@@ -19,11 +19,12 @@ class meteo_call:
 # The order of variables in hourly or daily is important to assign them correctly below
     self.url = "https://api.open-meteo.com/v1/forecast"
 
-  def get_weather(self, lat, lon, past_days=7) -> dict:
+  def get_weather(self, lat, lon, past_days=31) -> dict:
 
     params = {
 	    "latitude": lat,
 	    "longitude": lon,
+      "daily": ["sunrise", "sunset", "temperature_2m_max"], 
 	    "current": ["temperature_2m", "is_day", "precipitation", "relative_humidity_2m", "rain"],     # the order of "current" matters - these must match exact variable names from OpenMeteo
 	    "timezone": "America/Denver",
 	    "past_days": past_days,
@@ -50,15 +51,48 @@ class meteo_call:
     relative_humidity = current.Variables(3).Value()
     rain = current.Variables(4).Value()
 
-    return {
-            "temperature" : temp,
-            "is_day" : is_day,
-            "precipitation" : precipitation,
-            "relative_humidity" : relative_humidity,
-            "rain" : rain,
-            "timestamp" : datetime.fromtimestamp(current.Time())
+#daily.Variables
+    daily = response.Daily()
+    daily_sunrise = daily.Variables(0).ValuesInt64AsNumpy()
+    daily_sunset = daily.Variables(1).ValuesInt64AsNumpy()
+    daily_temperature_2m_max = daily.Variables(2).ValuesAsNumpy()
 
+    daily_data = {"date": pd.date_range(
+    start = pd.to_datetime(daily.Time(), unit = "s", utc = True),
+    end = pd.to_datetime(daily.TimeEnd(), unit = "s", utc = True),
+    freq = pd.Timedelta(seconds = daily.Interval()),
+    inclusive = "left"
+    )}
+
+    daily_data["sunrise"] = daily_sunrise
+    daily_data["sunset"] = daily_sunset
+    daily_data["temperature_2m_max"] = daily_temperature_2m_max
+
+    daily_dataframe = pd.DataFrame(data = daily_data)
+    print("\nDaily data\n", daily_dataframe)
+
+    historical = []
+    for i, dt in enumerate(daily_data["date"]):
+        historical.append({
+            "timestamp": dt.to_pydatetime(),
+            "temperature": daily_temperature_2m_max[i],
+            "sunrise": pd.to_datetime(daily_sunrise[i], unit='s', utc=True),
+            "sunset": pd.to_datetime(daily_sunset[i], unit='s', utc=True)
+        })
+
+    return {
+        "current": {
+            "temperature": temp,
+            "is_day": is_day,
+            "precipitation": precipitation,
+            "relative_humidity": relative_humidity,
+            "rain": rain,
+            "timestamp": datetime.fromtimestamp(current.Time())
+        },
+        "historical": historical
     }
+  
+
 
 # # debugging print statements
 

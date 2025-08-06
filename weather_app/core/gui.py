@@ -1,4 +1,3 @@
-
 #  Add at least 3 input controls (entry fields, dropdowns, radio buttons, etc.)
 #  Display at least 3 weather metrics
 #  Implement at least 2 different button functionalities
@@ -172,7 +171,7 @@ class WeatherDashboard:
 		if city not in self.weather_data:
 			messagebox.showerror("City Not Found", f"City '{city}' not found in data.")
 			return
-		city_data = [d for d in self.weather_data[city] if d is not None]
+		city_data = self.weather_data[city]["historical"]
 
 		# Filter data by date range (dates in date_list)
 		filtered = [d for d in city_data 
@@ -188,6 +187,7 @@ class WeatherDashboard:
 		
 		# Use most recent day for display metrics
 		latest = filtered[-1]
+		self.current_weather_data = filtered
 
 		# Show and Convert Temperature Display
 		temp = latest['temperature']
@@ -197,7 +197,7 @@ class WeatherDashboard:
 			temp_disp = f"{round(temp, 1)} °F" 
 
 		self.temp_label.config(text=f"Temperature: {temp_disp}")
-		self.humidity_label.config(text=f"Humidity: {latest['relative_humidity']}%")
+		# self.humidity_label.config(text=f"Humidity: {latest['relative_humidity']}%")
 
 		# self.precip_label.config(text=f"Precipitation: {latest['precipitation']} in")
 		self.current_city = city
@@ -211,7 +211,7 @@ class WeatherDashboard:
 		if city not in self.weather_data:
 			self.canvas.draw()
 			return
-		city_data = self.weather_data[city]
+		city_data = self.weather_data[city]["historical"]
 		filtered = [d for d in city_data 
 					if d['timestamp'].date() in [dt.date() for dt in date_list]]
 		if not filtered:
@@ -249,12 +249,15 @@ class WeatherDashboard:
 				lat = coords["lat"]
 				lon = coords["lon"]
 				live_data = self.api_call.get_weather(lat, lon, past_days=past_days)
-				self.weather_data[city] = [live_data]
+				self.weather_data[city] = live_data
 				self.current_city = city
+				current_temp = self.weather_data[city]["current"]["temperature"]
+				historical_temps = self.weather_data[city]["historical"]
 
  # Log historical data to CSV
-				desc = f"Humidity: {live_data['relative_humidity']}%, Precip: {live_data['precipitation']} in"
-				log_weather_data(city, live_data['temperature'], desc)
+				current = live_data["current"]
+				desc = f"Humidity: {current['relative_humidity']}%, Precip: {current['precipitation']} in"
+				log_weather_data(city, current['temperature'], desc)
 
 				self.update_display()
 
@@ -302,8 +305,8 @@ class WeatherDashboard:
 			messagebox.showerror("API Error", f"Fetch didn't work: {e}")
 			return
 
-		self.weather_data[city1] = [live_data1]  # get most recent entry
-		self.weather_data[city2] = [live_data2]
+		self.weather_data[city1] = live_data1
+		self.weather_data[city2] = live_data2
 
 		self.display_comparison(city1, live_data1, city2, live_data2)
 	
@@ -311,8 +314,8 @@ class WeatherDashboard:
 		"""Displays current weather comparison between two cities"""
 		self.plot.clear()
 
-		temps = [live_data1['temperature'], live_data2['temperature']]
-		humidities = [live_data1['relative_humidity'], live_data2['relative_humidity']]
+		temps = [live_data1['current']['temperature'], live_data2['current']['temperature']]
+		humidities = [live_data1['current']['relative_humidity'], live_data2['current']['relative_humidity']]
 		cities = [city1, city2]
 
 		x_positions = [1, 2]
@@ -359,7 +362,7 @@ class WeatherDashboard:
 			temp_disp = f"{round(temp, 1)} °F"
 
 		self.temp_label.config(text=f"Temperature: {temp_disp}")
-		self.humidity_label.config(text=f"Humidity: {latest['relative_humidity']}%")
+		# self.humidity_label.config(text=f"Humidity: {latest['relative_humidity']}%")
 
 		self.update_chart()
 
